@@ -22,7 +22,7 @@ export default function LoginForm({ error, isSubmitting, onSubmit }: LoginFormPr
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-4 text-black">
       {error && <p className="text-red-600 bg-red-100 p-2 rounded text-center">{error}</p>}
 
       <label className="block text-sm font-medium" htmlFor="email">
