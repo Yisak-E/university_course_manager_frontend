@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import {useCallback, useEffect, useState} from "react";
 import { useRouter } from "next/navigation";
 import type { LoginPayload } from "@/lib/api/auth";
 import { login } from "@/lib/api/auth";
@@ -10,6 +10,9 @@ export default function LoginPage() {
   const router = useRouter();
   const [error, setError] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+
 
   const handleLogin = useCallback(
     async (values: LoginPayload) => {
@@ -37,9 +40,27 @@ export default function LoginPage() {
     [router]
   );
 
+  useEffect(() => {
+    const timer = setTimeout(()=>{
+        setLoading(false);
+        }, 500);
+        return () => clearTimeout(timer);
+    }, []);
+
+
+
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center h-screen">
+                <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+        );
+    }
+
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-100">
-      <div className="bg-white p-10 rounded-lg shadow-lg w-96">
+    <div className="flex items-center justify-center h-screen bg-gray-100 bg-img-mt">
+      <div className=" bg-gray-500/50 border-2 border-black  shadow- p-10 rounded-lg shadow-lg w-96">
         <h2 className="text-2xl text-black font-bold mb-6 text-center">Login</h2>
         <LoginForm error={error} isSubmitting={isSubmitting} onSubmit={handleLogin} />
       </div>
