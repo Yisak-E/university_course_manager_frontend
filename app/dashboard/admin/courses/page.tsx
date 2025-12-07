@@ -1,7 +1,7 @@
 'use client'
 
 import Link from "next/link";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import CourseList from "@/app/dashboard/admin/courses/courseList/page";
 import NewCourse from "@/app/dashboard/admin/courses/newCourseForm/page";
 import UpdateCourse from "@/app/dashboard/admin/courses/editCourse/page";
@@ -14,64 +14,70 @@ const Settings = ()=>{
     )
 }
 
-const componentsMap = {
-  courseList: <CourseList />,
-  newCourse: <NewCourse />,
-  updateCourse: <UpdateCourse />,
-  settings: <Settings />
-};
+
+
+import api from "@/lib/api/axios";
+
+
+interface Course {
+id: number;
+code: string;
+title: string;
+credit_hours: number;
+department: {
+    id: number;
+    name: string;
+  };
+}
 
 
 export default function MangeCourse(){
-    const [selectedCompo, setSelectedCompo] = useState(componentsMap.courseList);
+    const [showForm, setShowForm] = useState(false);
+    const [counter, setCounter] = useState(0);
+     const [courses, setCourses] = useState<Course[]>([]);
+     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+
+
+      useEffect(()=>{
+        const fetchCourses = async () =>{
+            try{
+                const res = await api.get('/api/courses/coursesList');
+                console.log("Response", res.data);
+                setCourses(res.data??[]);
+            }catch(err: any){
+                console.log(err);
+                setError("fail to load courses");
+            }finally{
+                setLoading(false);
+            }
+        }
+        fetchCourses()
+    }, []);
+
+    const changeSize = ()=>{
+       setShowForm(!showForm);
+    }
 
 
 
     return (
         <main className="flex flex-col items-center justify-center h-screen bg-gray-100">
            <article className={"grid grid-cols-8 min-h-screen bg-gray-300 w-full"}>
-               <section className={' lg:col-span-1 p-5 bg-gray-400'}>
-                   <h3 className={'text-2xl font-semibold mb-5'}>Manage course</h3>
-                   <ul>
-                       <li >
-                           <button
-                               className={'border-1 border-black p-4 mb-2 w-full hover:cursor-pointer'}
-                               onClick={()=>{
-                                setSelectedCompo(componentsMap.courseList)
-                           }}>View Course</button>
-                       </li>
 
-                       <li >
-                            <button
-                                className={'border-1 border-black p-4 mb-2 w-full hover:cursor-pointer'}
-                                onClick={()=>{
-                                setSelectedCompo(componentsMap.newCourse)
-                            }}
-                                >New Course</button>
-                       </li>
-
-                       <li >
-                        <button
-                            className={'border-1 border-black p-4 mb-2 w-full hover:cursor-pointer'}
-                            onClick={()=>{
-                                setSelectedCompo(componentsMap.updateCourse)
-                            }}
-                        >Edit Course</button></li>
-
-                       <li >
-                        <button
-                            className={'border-1 border-black p-4 mb-2 w-full hover:cursor-pointer'}
-                            onClick={()=>{
-                                setSelectedCompo(componentsMap.settings)
-                            }}
-                        >Setting</button></li>
-                   </ul>
-
+               <section className={showForm? 'col-span-4':'col-span-8'}>
+                   <CourseList changeSize={changeSize} setCounter={setCounter} courses={courses} />
                </section>
-               <section className={'lg:col-span-5'}>
-                   {selectedCompo}
-
+               <section className={showForm && counter === 1? 'col-span-4':'hidden'}>
+                   <NewCourse />
                </section>
+               <section className={showForm && counter === 2? 'col-span-4':'hidden'}>
+                   <UpdateCourse />
+               </section>
+               <section className={showForm && counter === 3? 'col-span-4':'hidden'}>
+                   {}
+               </section>
+
            </article>
         </main>
     )

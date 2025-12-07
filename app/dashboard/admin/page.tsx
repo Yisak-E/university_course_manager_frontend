@@ -47,8 +47,8 @@ export default function AdminDashboard() {
        <div className={'grid grid-cols-4 min-h-screen '}>
            <aside className="col-span-1 bg-gray-800 text-white p-4">
                 <ul className={'mt-10'}>
-                    <li className={'mb-2'}><Link href=" /dashboard/admin/courses" className={'hover:text-blue-400'}>OverView</Link></li>
-                    <li className={'mb-2'}><a  className={'hover:text-blue-400'}>View Course</a></li>
+                    <li className={'mb-2'}><Link href={"#"} className={'hover:text-blue-400'}>OverView</Link></li>
+                    <li className={'mb-2'}><Link href="/dashboard/admin/courses"  className={'hover:text-blue-400'}>View Course</Link></li>
                     <li className={'mb-2'}><a className={'hover:text-blue-400'}>Instructor</a></li>
                     <li className={'mb-2'}><a className={'hover:text-blue-400'}>Students</a></li>
                     <li className={'mb-2'}><a className={'hover:text-blue-400'}>Courses</a></li>
